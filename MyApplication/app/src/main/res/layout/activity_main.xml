@@ -7,12 +7,39 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="199dp"
+        android:layout_height="104dp"
         android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.068" />
+
+    <ScrollView
+        android:layout_width="409dp"
+        android:layout_height="582dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="148dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <com.example.myapplication.SlideButton>
+                android:layout_width=""
+                android:layout_height="".SlideButton
+                android:id="@+id/unlockButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:max="100"
+                android:progressDrawable="@android:color/transparent"
+                android:thumb="@drawable/button_lock" >
+            </com.example.myapplication.SlideButton>
+        </LinearLayout>
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
