@@ -35,10 +35,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btn = (Button)findViewById(R.id.pattern_lock_button);
+        Button btn2 = (Button)findViewById(R.id.scrabble_lock_button);
+        Button btn3 = (Button)findViewById(R.id.random_pin_button);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, DisplayPatternLock.class));
+            }
+        });
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, display_scrabble_lock.class));
+            }
+        });
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, display_random_pin_lock.class));
             }
         });
     }
