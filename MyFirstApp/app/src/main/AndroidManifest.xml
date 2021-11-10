@@ -11,7 +11,9 @@
         android:theme="@style/Theme.MyFirstApp">
         <activity
             android:name=".DisplayPatternLock"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            />
 
         <activity
             android:name=".MainActivity"

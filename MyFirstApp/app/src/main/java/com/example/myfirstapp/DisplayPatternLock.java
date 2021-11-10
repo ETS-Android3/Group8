@@ -23,6 +23,7 @@ public class DisplayPatternLock extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_display_pattern_lock);
 
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
@@ -58,6 +59,8 @@ public class DisplayPatternLock extends AppCompatActivity {
                         if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_STARTED) {
                             Log.d(getClass().getName(), "Pattern drawing started");
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_PROGRESS) {
+                            mPatternLockView.setRotation(mPatternLockView.getRotation()+5);
+
                             Log.d(getClass().getName(), "Pattern progress: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_COMPLETE) {
