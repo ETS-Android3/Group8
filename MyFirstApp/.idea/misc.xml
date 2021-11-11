@@ -3,10 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/tyler/AndroidStudioProjects/MyFirstApp/app/src/main/res/layout/activity_button_group.xml" value="0.18" />
         <entry key="..\:/Users/tyler/AndroidStudioProjects/MyFirstApp/app/src/main/res/layout/activity_display_message.xml" value="0.33" />
         <entry key="..\:/Users/tyler/AndroidStudioProjects/MyFirstApp/app/src/main/res/layout/activity_display_pattern_lock.xml" value="0.21" />
         <entry key="..\:/Users/tyler/AndroidStudioProjects/MyFirstApp/app/src/main/res/layout/activity_display_scrabble_lock.xml" value="0.25" />
         <entry key="..\:/Users/tyler/AndroidStudioProjects/MyFirstApp/app/src/main/res/layout/activity_main.xml" value="0.15" />
+        <entry key="..\:/Users/tyler/AndroidStudioProjects/MyFirstApp/app/src/main/res/xml/activity_button_group.xml" value="0.15390625" />
       </map>
     </option>
   </component>

@@ -2,4 +2,8 @@
     <string name="app_name">My FirstApp</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+    <string name="pattern_lock">Pattern Lock</string>
+    <string name="lock_selection">Lock Selection</string>
+    <string name="scrabble_lock">Scrabble Lock</string>
+    <string name="random_pin_lock">Random-Pin Lock</string>
 </resources>
