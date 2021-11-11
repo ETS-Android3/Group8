@@ -23,7 +23,9 @@ import com.andrognito.rxpatternlockview.events.PatternLockCompoundEvent;
 import java.util.List;
 
 import io.reactivex.functions.Consumer;
-
+//CREDITS
+//https://github.com/aritraroy/PatternLockView
+//https://stackoverflow.com/questions/32534076/what-is-the-best-way-to-do-a-button-group-that-can-be-selected-and-activate-inde/32545086
 public class MainActivity extends AppCompatActivity {
 
     @Override
