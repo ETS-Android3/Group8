@@ -1,6 +1,7 @@
 package com.example.myfirstapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -17,15 +18,20 @@ import com.andrognito.rxpatternlockview.events.PatternLockCompoundEvent;
 import java.util.List;
 
 import io.reactivex.functions.Consumer;
+import io.reactivex.internal.operators.single.SingleDelayWithCompletable;
 
 public class DisplayPatternLock extends AppCompatActivity {
     private PatternLockView mPatternLockView;
+    private SwitchCompat setPasswordSwitch;
+    String password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_display_pattern_lock);
 
+        setPasswordSwitch = (SwitchCompat) findViewById(R.id.setPassword);
+
+        password = "012345";
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
         mPatternLockView.setDotCount(3);
         mPatternLockView.setDotNormalSize((int) ResourceUtils.getDimensionInPx(this, R.dimen.pattern_lock_dot_size));
@@ -59,22 +65,46 @@ public class DisplayPatternLock extends AppCompatActivity {
                         if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_STARTED) {
                             Log.d(getClass().getName(), "Pattern drawing started");
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_PROGRESS) {
-                            mPatternLockView.setRotation(mPatternLockView.getRotation()+5);
+                            //Code for rotation
+                            rotate();
+
 
                             Log.d(getClass().getName(), "Pattern progress: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_COMPLETE) {
                             Log.d(getClass().getName(), "Pattern complete: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+
+                            if(!setPasswordSwitch.isChecked()){
+                                patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+                            }
+                            else{
+                                password = PatternLockUtils.patternToString(mPatternLockView, event.getPattern());
+                            }
+
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_CLEARED) {
                             Log.d(getClass().getName(), "Pattern has been cleared");
                         }
                     }
                 });
     }
-    private void patternButton(View view){
-
+    //Method for handling rotation
+    private void rotate(){
+        mPatternLockView.setRotation(mPatternLockView.getRotation()+5);
     }
+    //Checks if the completed pattern matches the saved pattern password
+    private Boolean patternCheck(String pattern){
+
+        if (pattern.equals(password)) {
+            Log.d(getClass().getName(), "Pattern Correct");
+            return true;
+        }
+        else{
+            Log.d(getClass().getName(), "Pattern Incorrect");
+            return false;
+        }
+    }
+
     private PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
         @Override
         public void onStarted() {

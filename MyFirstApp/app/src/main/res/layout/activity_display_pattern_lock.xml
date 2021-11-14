@@ -38,4 +38,15 @@
         app:wrongStateColor="#CD1111"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/setPassword"
+        android:layout_width="174dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="44dp"
+        android:text="@string/set_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pattern_lock_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
