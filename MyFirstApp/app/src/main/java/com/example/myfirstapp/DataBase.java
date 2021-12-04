@@ -52,7 +52,8 @@ public class DataBase{
 
             if(resultSet.next())
             {
-                users.add(new User(resultSet.getString(2),resultSet.getInt(1)));
+                users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
+                
             }
             System.out.println("Got Users");
         }
