@@ -30,32 +30,51 @@ public class DataBase{
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;    // For the result set, if applicable
 
+    ArrayList<User> users;
     public DataBase() {
-
+        users = getRemoteUsers();
     }
 
-    public ArrayList<User> getUsers(){
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+    public ArrayList<String> getUserNames(){
+        ArrayList<String> user_names = new ArrayList<>();
+        for(User user:users){
+            user_names.add(user.getName());
+        }
+        return user_names;
+    }
+    public void addUser(String name){
+        users.add(new User(name,users.size()));
+        setRemoteUsers();
+    }
+
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
+        setRemoteUsers();
+    }
+
+    private void setRemoteAll(){
+
+    }
+    private ArrayList<User> getRemoteUsers(){
         ArrayList<User> users = new ArrayList<>();
         try
         {
-
-            // Ensure the SQL Server driver class is available.
-            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             // Establish the connection.
-
             connection = DriverManager.getConnection(URL);
-            System.out.println("Connected to DB!!!!");
-            String filename = "SVPoster.jpg";
             String sql = "SELECT name,id FROM USERS;";
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
 
-            if(resultSet.next())
+            while(resultSet.next())
             {
                 users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
-                
+                //System.out.println("GOT USER");
             }
             System.out.println("Got Users");
+            System.out.println(users);
         }
         catch (Exception ex)
         {
@@ -63,29 +82,22 @@ public class DataBase{
         }
         return users;
     }
-    public void setUsers(ArrayList<User> users){
-        
+    private void setRemoteUsers(){
         try
         {
-
-            // Ensure the SQL Server driver class is available.
-            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             // Establish the connection.
             connection = DriverManager.getConnection(URL);
-            String filename = "SVPoster.jpg";
             String sql_delete = "DELETE FROM USERS;";
             String sql_insert = "INSERT INTO USERS VALUES (?, ?);";
             statement = connection.createStatement();
-
             statement.executeUpdate(sql_delete);
-
+            //Insert each user
             for (User user:users) {
                 preparedStatement = connection.prepareStatement(sql_insert);
                 preparedStatement.setInt(1, user.getId());
                 preparedStatement.setString(2, user.getName());
                 preparedStatement.executeUpdate();
             }
-
             System.out.println("Inserted Users.");
         }
         catch (Exception ex)

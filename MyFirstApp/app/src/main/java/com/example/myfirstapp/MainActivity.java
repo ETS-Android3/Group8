@@ -35,27 +35,21 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        //Network permission stuff
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET}, PackageManager.PERMISSION_GRANTED);
-
-
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        //Create the database
         db = new DataBase();
-        //Elements
+        //Create the widgets
         pattern_lock_button = (Button)findViewById(R.id.pattern_lock_button);
         scrabble_lock_button = (Button)findViewById(R.id.scrabble_lock_button);
         add_user_button = (Button)findViewById(R.id.add_user_button);
         user_spinner = findViewById(R.id.user_spinner);
         add_user_text = findViewById(R.id.add_user_text) ;
 
-
-        user_names = new ArrayList<String>();
-        ArrayList<User> users = db.getUsers();
-        for(User user:users){
-            user_names.add(user.getName());
-        }
+        user_names = db.getUserNames();
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         user_spinner.setAdapter(adapter);
@@ -81,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(user_names);
                 adapter.clear();
                 adapter.addAll(user_names);
-                User u = new User(s,users.size());
-                users.add(u);
-                db.setUsers(users);
+                db.addUser(s);
             }
         });
 
