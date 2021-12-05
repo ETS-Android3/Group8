@@ -1,5 +1,6 @@
 package com.example.SecurityApp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -29,6 +30,8 @@ public class PatternLock extends AppCompatActivity {
     private SeekBar seekBar;
     private TextView rotateText;
     private int uid;
+    private long startTime, endTime;
+    private double elapsedTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +95,7 @@ public class PatternLock extends AppCompatActivity {
                     public void accept(PatternLockCompoundEvent event) throws Exception {
                         if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_STARTED) {
                             Log.d(getClass().getName(), "Pattern drawing started");
+                            startTime = System.currentTimeMillis();
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_PROGRESS) {
                             //Code for rotation
                             rotate(seekBar.getProgress());
@@ -100,8 +104,11 @@ public class PatternLock extends AppCompatActivity {
                             Log.d(getClass().getName(), "Pattern progress: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_COMPLETE) {
+
                             Log.d(getClass().getName(), "Pattern complete: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+                            endTime = System.currentTimeMillis();
+                            elapsedTime = endTime - startTime;
                             mPatternLockView.setRotation(0);
                             if(!setPasswordSwitch.isChecked()){
                                 patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
@@ -127,10 +134,22 @@ public class PatternLock extends AppCompatActivity {
 
         if (pattern.equals(db.getPatternPasswordById(uid))) {
             Log.d(getClass().getName(), "Pattern Correct");
+            // Display a popup
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(String.format("Password was Correct!\nElapsed Time: %.3f", elapsedTime));
+            builder.setCancelable(true);
+            AlertDialog alert = builder.create();
+            alert.show();
             return true;
         }
         else{
             Log.d(getClass().getName(), "Pattern Incorrect");
+            // Display a popup
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(String.format("Incorrect Password\nElapsed Time: %.3f", elapsedTime));
+            builder.setCancelable(true);
+            AlertDialog alert = builder.create();
+            alert.show();
             return false;
         }
     }
