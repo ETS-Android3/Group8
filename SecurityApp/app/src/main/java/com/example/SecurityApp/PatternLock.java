@@ -96,12 +96,11 @@ public class PatternLock extends AppCompatActivity {
                     public void accept(PatternLockCompoundEvent event) throws Exception {
                         if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_STARTED) {
                             Log.d(getClass().getName(), "Pattern drawing started");
-                            startAttempt();
+                            startTime = System.currentTimeMillis();
+                            //startAttempt();
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_PROGRESS) {
                             //Code for rotation
                             rotate(seekBar.getProgress());
-
-
                             Log.d(getClass().getName(), "Pattern progress: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_COMPLETE) {
@@ -109,14 +108,14 @@ public class PatternLock extends AppCompatActivity {
                             Log.d(getClass().getName(), "Pattern complete: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                             if(!setPasswordSwitch.isChecked()){
+                                endTime = System.currentTimeMillis();
+                                elapsedTime = ((double) (endTime - startTime)) / 1000;
                                 boolean result = patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                                 endAttempt(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()), result);
                                 mPatternLockView.setRotation(0);
                             }
                             else{
-
                                 db.setPatternPasswordById(uid,PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
-
                             }
 
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_CLEARED) {
@@ -126,18 +125,16 @@ public class PatternLock extends AppCompatActivity {
                 });
     }
     private void startAttempt(){
-        if(test.testComplete()){
-            db.addUserTest(uid,test);
-            test = new Test(uid);
-        }
-        startTime = System.currentTimeMillis();
 
     }
     private void endAttempt(String endPattern, boolean result){
-        endTime = System.currentTimeMillis();
-        elapsedTime = ((double) (endTime - startTime)) / 1000;
         Attempt attempt = new Attempt(elapsedTime,"Pattern",result,endPattern);
         test.addAttempt(attempt);
+        //If test is complete, submit test and start a new one
+        if(result){
+            db.addUserTest(uid,test);
+            test = new Test(uid);
+        }
     }
     //Method for handling rotation
     private void rotate(int amount){

@@ -16,10 +16,13 @@ public class Test {
     public ArrayList<Attempt> getAttempts() {
         return attempts;
     }
-    //Finds if the last attempt was a success;
-    public boolean testComplete(){
-        if(attempts.size()==0) return true;
-        if(attempts.get(attempts.size()-1).isUnlockSuccess()) return true;
-        return false;
+    /*Finds if the last attempt was a success;
+    No tests completed -1
+    Tests already completed 1
+    Test in process 0*/
+    public int testComplete(){
+        if(attempts.size()==0) return -1;
+        if(attempts.get(attempts.size()-1).isUnlockSuccess()) return 1;
+        return 0;
     }
 }
