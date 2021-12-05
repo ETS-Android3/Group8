@@ -1,5 +1,6 @@
 package com.example.SecurityApp;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 
-public class DataBase{
+public class DataBase implements Serializable {
     // Database credentials
     final static String HOSTNAME = "sanb4019-sql-server.database.windows.net";
 
@@ -28,16 +29,15 @@ public class DataBase{
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;    // For the result set, if applicable
 
-<<<<<<< Updated upstream
     ArrayList<User> users;
-=======
+
     // Query Templates
-    private final static String GET_USERS_QUERY = "SELECT name, id FROM USERS;";
+    private final static String GET_USERS_QUERY = "SELECT name, id, scrabblePassword, patternPassword FROM USERS;";
     private final static String DELETE_USERS_QUERY = "DELETE FROM USERS;";
     private final static String INSERT_USER_QUERY = "INSERT INTO USERS VALUES (?, ?, ?, ?);";
 
 
->>>>>>> Stashed changes
+
     public DataBase() {
         users = getRemoteUsers();
     }
@@ -56,7 +56,7 @@ public class DataBase{
         boolean nameExists = false;
         for(User u:users){if(u.getName().equals(name)) nameExists = true;}
         if(!nameExists) {
-            users.add(new User(name, users.size(), "password", "000000"));
+            users.add(new User(name, users.size(), "password", "123456"));
             setRemoteUsers();
             return true;
         }
@@ -78,18 +78,13 @@ public class DataBase{
         {
             // Establish the connection.
             connection = DriverManager.getConnection(URL);
-            String sql = "SELECT name,id FROM USERS;";
+            String sql = GET_USERS_QUERY;
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
 
             while(resultSet.next())
             {
-<<<<<<< Updated upstream
-                users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
-                //System.out.println("GOT USER");
-=======
                 users.add(new User(resultSet.getString(1),resultSet.getInt(2), resultSet.getString(3),resultSet.getString(4)));
->>>>>>> Stashed changes
             }
             System.out.println("Got Users");
             System.out.println(users);
@@ -103,53 +98,35 @@ public class DataBase{
         return users;
     }
     private void setRemoteUsers(){
-<<<<<<< Updated upstream
-        try
-        {
+        try {
             // Establish the connection.
             connection = DriverManager.getConnection(URL);
-            String sql_delete = "DELETE FROM USERS;";
-            String sql_insert = "INSERT INTO USERS VALUES (?, ?);";
             statement = connection.createStatement();
-            statement.executeUpdate(sql_delete);
+
+            // Delete all users for fresh start
+            statement.executeUpdate(DELETE_USERS_QUERY);
+
             //Insert each user
             for (User user:users) {
-                preparedStatement = connection.prepareStatement(sql_insert);
+                preparedStatement = connection.prepareStatement(INSERT_USER_QUERY);
                 preparedStatement.setInt(1, user.getId());
                 preparedStatement.setString(2, user.getName());
+                preparedStatement.setString(3, user.getScrabblePassword());
+                preparedStatement.setString(4, user.getPatternPassword());
                 preparedStatement.executeUpdate();
-=======
-
-        Thread thread = new Thread( () -> {
-            try {
-                // Establish the connection.
-                connection = DriverManager.getConnection(URL);
-                statement = connection.createStatement();
-
-                // Delete all users for fresh start
-                statement.executeUpdate(DELETE_USERS_QUERY);
-
-                //Insert each user
-                for (User user:users) {
-                    preparedStatement = connection.prepareStatement(INSERT_USER_QUERY);
-                    preparedStatement.setInt(1, user.getId());
-                    preparedStatement.setString(2, user.getName());
-                    preparedStatement.setString(3, user.getScrabblePassword());
-                    preparedStatement.setString(4, user.getPatternPassword());
-                    preparedStatement.executeUpdate();
-                }
-                System.out.println("Inserted Users.");
-                connection.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
->>>>>>> Stashed changes
             }
             System.out.println("Inserted Users.");
             connection.close();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    public User findUserByName(String name){
+        for(User u: users){
+            if(u.getName().equals(name)) return u;
+        }
+        final User o = null;
+        return o;
     }
 }

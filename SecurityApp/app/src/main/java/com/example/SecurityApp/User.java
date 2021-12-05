@@ -1,8 +1,9 @@
 package com.example.SecurityApp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
     private String name;
     private int id;
     private String scrabblePassword;
@@ -11,6 +12,8 @@ public class User {
     public User(String name, int id, String scrabblePassword, String patternPassword) {
         this.name = name;
         this.id = id;
+        this.scrabblePassword = scrabblePassword;
+        this.patternPassword = patternPassword;
     }
 
     @Override

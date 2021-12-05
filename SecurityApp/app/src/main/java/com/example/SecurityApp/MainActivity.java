@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.regex.Pattern;
+
 import SecurityApp.R;
 
 //CREDITS
@@ -24,6 +26,7 @@ import SecurityApp.R;
 //https://stackoverflow.com/questions/32534076/what-is-the-best-way-to-do-a-button-group-that-can-be-selected-and-activate-inde/32545086
 public class MainActivity extends AppCompatActivity {
     DataBase db;
+    User currentUser;
     Button pattern_lock_button, scrabble_lock_button, add_user_button;
     Spinner user_spinner;
     EditText add_user_text;
@@ -53,17 +56,24 @@ public class MainActivity extends AppCompatActivity {
         user_spinner.setAdapter(adapter);
         adapter.addAll(db.getUserNames());
 
+        currentUser = db.findUserByName((String)user_spinner.getSelectedItem());
 
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent startPattern = new Intent(MainActivity.this, PatternLock.class);
+                startPattern.putExtra("User", currentUser);
+                startPattern.putExtra("Database", db);
                 startActivity(new Intent(MainActivity.this, PatternLock.class));
             }
         });
         scrabble_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);
+                startScrabble.putExtra("User", currentUser);
+                startScrabble.putExtra("Database", db);
                 startActivity(new Intent(MainActivity.this, ScrabbleLock.class));
             }
         });

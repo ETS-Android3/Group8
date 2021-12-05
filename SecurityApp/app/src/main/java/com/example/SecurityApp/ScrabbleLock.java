@@ -1,7 +1,9 @@
 package com.example.SecurityApp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +20,8 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     private final Button[] btn = new Button[15];
     private List<Character> letterList;
     private Button btn_unfocus;
+    private User user;
+    private DataBase db;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
@@ -26,6 +30,11 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_scrabble_lock);
+
+        Intent intent = getIntent();
+        db = (DataBase) intent.getSerializableExtra("Database");
+        user = (User) intent.getSerializableExtra("User");
+
         letterList = generateLetters("Password");
 
         for(int i = 0; i < btn.length; i++){

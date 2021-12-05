@@ -3,6 +3,7 @@ package com.example.SecurityApp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,15 +23,19 @@ import io.reactivex.functions.Consumer;
 public class PatternLock extends AppCompatActivity {
     private PatternLockView mPatternLockView;
     private SwitchCompat setPasswordSwitch;
-    String password;
+    private User user;
+    private DataBase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_pattern_lock);
-
+        Intent intent = getIntent();
+        db = (DataBase) intent.getSerializableExtra("Database");
+        user = (User) intent.getSerializableExtra("User");
         setPasswordSwitch = (SwitchCompat) findViewById(R.id.setPassword);
 
-        password = "012345";
+
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
         mPatternLockView.setDotCount(3);
         mPatternLockView.setDotNormalSize((int) ResourceUtils.getDimensionInPx(this, R.dimen.pattern_lock_dot_size));
@@ -78,7 +83,7 @@ public class PatternLock extends AppCompatActivity {
                                 patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                             }
                             else{
-                                password = PatternLockUtils.patternToString(mPatternLockView, event.getPattern());
+                                user.setPatternPassword(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                             }
 
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_CLEARED) {
@@ -94,7 +99,7 @@ public class PatternLock extends AppCompatActivity {
     //Checks if the completed pattern matches the saved pattern password
     private Boolean patternCheck(String pattern){
 
-        if (pattern.equals(password)) {
+        if (pattern.equals(user.getPatternPassword())) {
             Log.d(getClass().getName(), "Pattern Correct");
             return true;
         }
