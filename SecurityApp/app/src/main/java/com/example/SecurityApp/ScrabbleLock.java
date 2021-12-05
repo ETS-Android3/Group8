@@ -1,12 +1,14 @@
 package com.example.SecurityApp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.Arrays;
@@ -18,14 +20,21 @@ import SecurityApp.R;
 
 public class ScrabbleLock extends AppCompatActivity implements View.OnClickListener {
     // Properties
-    private final Button[] btn = new Button[15];
+    private User currentUser;
+    private DataBase db;
+
+    private final Button[] btn = new Button[26];
     private List<Character> letterList;
-    private List<Character> testPassword;
+    StringBuilder testPassword;
     private Button btn_unfocus;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
-            R.id.btn0, R.id.btn13, R.id.btn14, R.id.btn15};
+            R.id.btn12, R.id.btn13, R.id.btn14, R.id.btn15,
+            R.id.btn16, R.id.btn17, R.id.btn18, R.id.btn19,
+            R.id.btn20, R.id.btn21, R.id.btn22, R.id.btn23, R.id.btn24, R.id.btn25};
+    private boolean isFirstClick = true;
+    private boolean randomize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +56,45 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-        // Set focus on the button clicked
+        // Find the button clicked
         Button clicked = (Button)findViewById(v.getId());
-        setFocus(btn_unfocus, (Button)findViewById(v.getId()));
-
-        // Add the character to the edittext string
         EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
-        editText.append(clicked.getText());
 
-        // TODO: Add the character clicked to the letters list/check if it belongs
-        // TODO: Check why the bottom right and left buttons dont work
+        // Check if it was the enter button
+        if(clicked.getText().equals("Enter")) {
+            // TODO: Stop timer
+
+            // Check switch to see if password is being set or checked
+            SwitchCompat switchCompat = (SwitchCompat) findViewById(R.id.setScrabblePassword);
+            if(switchCompat.isChecked()) {
+                // Set password mode
+                currentUser.setScrabblePassword(testPassword.toString());
+            } else {
+                // Check password mode
+                // Test the data or set it as the password
+                if(testPassword(testPassword.toString(), currentUser.getScrabblePassword())) {
+                    // Passwords matched
+                    // TODO: Figure out what to add like a thumbs up or smth
+                } else {
+                    // Passwords did not match
+                    // Clear testpassword and the edittext
+                    testPassword.delete(0, testPassword.length());
+                    editText.setText("");
+                }
+            }
+        } else {
+            // Was one of the other buttons clicked
+            // Set focus on the button clicked
+            setFocus(btn_unfocus, clicked);
+
+            // Add the character to the edittext string
+            editText = (EditText) findViewById(R.id.editTextTextPassword);
+            editText.append(clicked.getText());
+
+            // Add the character to the testpassword for testing
+            testPassword.append(clicked.getText());
+
+        }
     }
 
     private void setFocus(Button btn_unfocus, Button btn_focus){
@@ -85,5 +123,16 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         List<Character> letterList = Arrays.asList(letters);
         Collections.shuffle(letterList);
         return letterList;
+    }
+
+    /**
+     * Tests the input password to check if it matches
+     *
+     * @param test the input password we want to test against
+     * @param actual the actual password
+     * @return true if the passwords match, false if not
+     */
+    private boolean testPassword(String test, String actual) {
+        return test.equals(actual);
     }
 }
