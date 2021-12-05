@@ -1,7 +1,6 @@
 package com.example.SecurityApp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,34 +8,41 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import SecurityApp.R;
 
 public class ScrabbleLock extends AppCompatActivity implements View.OnClickListener {
-    private final Button[] btn = new Button[15];
+    private final Button[] btn = new Button[26];
     private List<Character> letterList;
     private Button btn_unfocus;
     private User user;
     private DataBase db;
+    private boolean randomize;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
-            R.id.btn0, R.id.btn13, R.id.btn14, R.id.btn15};
+            R.id.btn12, R.id.btn13, R.id.btn14, R.id.btn15,
+            R.id.btn16, R.id.btn17, R.id.btn18, R.id.btn19,
+            R.id.btn20, R.id.btn21, R.id.btn22, R.id.btn23,
+            R.id.btn24, R.id.btn25};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_scrabble_lock);
-
+        randomize = true;
         Intent intent = getIntent();
         db = (DataBase) intent.getSerializableExtra("Database");
         user = (User) intent.getSerializableExtra("User");
 
-        letterList = generateLetters("Password");
-
+        letterList = generateLetters(user.getScrabblePassword());
+        System.out.println(letterList);
         for(int i = 0; i < btn.length; i++){
             System.out.println(i);
             btn[i] = (Button) findViewById(btn_id[i]);
@@ -78,18 +84,37 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         this.btn_unfocus = btn_focus;
     }
 
-    private List<Character> generateLetters(String password){
-        Character[] letters = new Character[15];
-        Random r = new Random();
+    private ArrayList<Character> generateLetters(String password){
+        ArrayList<Character> letters = new ArrayList<Character>();
 
-        for(int i = 0; i < password.length(); i++){
-            letters[i] = password.charAt(i);
+        if(randomize){
+            /*
+            String s = "";
+            Random r = new Random();
+            //Get unique characters from password
+            Set<Character> origSet = new LinkedHashSet<Character>();
+            for(char c:origSet) {
+                s=s+c;
+            }
+            for (int i = 0; i < s.length(); i++) {
+                origSet.add(s.charAt(i));
+            }
+            for(int i = 0; i < s.length(); i++){
+                letters.add(s.charAt(i));
+            }
+            for(int i = s.length(); i < 26; i++){
+                letters.add((char)(r.nextInt(26) + 'a'));
+            }
+            */
+            for(int i = 0; i < 26; i++){
+                letters.add((char)('A' + i));
+            }
+            Collections.shuffle(letters);
+            return letters;
         }
-        for(int i = password.length(); i < 15; i++){
-            letters[i] = (char)(r.nextInt(26) + 'a');
+        for(int i = 0; i < 26; i++){
+            letters.add((char)('A' + i));
         }
-        List<Character> letterList = Arrays.asList(letters);
-        Collections.shuffle(letterList);
-        return letterList;
+        return letters;
     }
 }
