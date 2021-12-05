@@ -27,6 +27,7 @@ public class DataBase implements Serializable {
 
 
     ArrayList<User> users;
+    ArrayList<ArrayList<Object>> userTests;
 
     // Query Templates
     private final static String GET_USERS_QUERY = "SELECT name, id, scrabblePassword, patternPassword FROM USERS;";
@@ -37,6 +38,13 @@ public class DataBase implements Serializable {
 
     public DataBase() {
         users = getRemoteUsers();
+        userTests = new ArrayList<>();
+    }
+    public void addUserTest(int uid, Test t){
+        ArrayList<Object> list = new ArrayList<>();
+        list.add(uid);
+        list.add(t);
+        userTests.add(list);
     }
     //PASSWORD GETTERS AND SETTERS
     public void setScrabblePasswordById(int id,String password){

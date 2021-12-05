@@ -32,13 +32,14 @@ public class PatternLock extends AppCompatActivity {
     private int uid;
     private long startTime, endTime;
     private double elapsedTime;
+    Test test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_pattern_lock);
 
         Intent intent = getIntent();
-
+        test = new Test(uid);
         db = (DataBase) intent.getSerializableExtra("Database");
         uid = intent.getIntExtra("UID", 0);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -95,7 +96,7 @@ public class PatternLock extends AppCompatActivity {
                     public void accept(PatternLockCompoundEvent event) throws Exception {
                         if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_STARTED) {
                             Log.d(getClass().getName(), "Pattern drawing started");
-                            startTime = System.currentTimeMillis();
+                            startAttempt();
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_PROGRESS) {
                             //Code for rotation
                             rotate(seekBar.getProgress());
@@ -104,14 +105,13 @@ public class PatternLock extends AppCompatActivity {
                             Log.d(getClass().getName(), "Pattern progress: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_COMPLETE) {
-
+                            Log.d(getClass().getName(), "Pattern drawing started");
                             Log.d(getClass().getName(), "Pattern complete: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
-                            endTime = System.currentTimeMillis();
-                            elapsedTime = ((double) (endTime - startTime)) / 1000;
-                            mPatternLockView.setRotation(0);
                             if(!setPasswordSwitch.isChecked()){
-                                patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+                                boolean result = patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+                                endAttempt(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()), result);
+                                mPatternLockView.setRotation(0);
                             }
                             else{
 
@@ -124,6 +124,20 @@ public class PatternLock extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    private void startAttempt(){
+        if(test.testComplete()){
+            db.addUserTest(uid,test);
+            test = new Test(uid);
+        }
+        startTime = System.currentTimeMillis();
+
+    }
+    private void endAttempt(String endPattern, boolean result){
+        endTime = System.currentTimeMillis();
+        elapsedTime = ((double) (endTime - startTime)) / 1000;
+        Attempt attempt = new Attempt(elapsedTime,"Pattern",result,endPattern);
+        test.addAttempt(attempt);
     }
     //Method for handling rotation
     private void rotate(int amount){

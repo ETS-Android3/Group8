@@ -8,6 +8,7 @@ public class User implements Serializable {
     private int id;
     private String scrabblePassword;
     private String patternPassword;
+    private ArrayList<Test> tests;
 
     public User(String name, int id, String scrabblePassword, String patternPassword) {
         this.name = name;
