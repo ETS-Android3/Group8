@@ -55,8 +55,10 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         user_spinner.setAdapter(adapter);
         adapter.addAll(db.getUserNames());
-
-        currentUser = db.findUserByName((String)user_spinner.getSelectedItem());
+        user_spinner.setSelection(0);
+        currentUser = db.findUserByName(user_spinner.getSelectedItem().toString());
+        System.out.println("Current User");
+        System.out.println(currentUser);
 
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent startPattern = new Intent(MainActivity.this, PatternLock.class);
                 startPattern.putExtra("User", currentUser);
                 startPattern.putExtra("Database", db);
-                startActivity(new Intent(MainActivity.this, PatternLock.class));
+                startActivity(startPattern);
             }
         });
         scrabble_lock_button.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);
                 startScrabble.putExtra("User", currentUser);
                 startScrabble.putExtra("Database", db);
-                startActivity(new Intent(MainActivity.this, ScrabbleLock.class));
+                startActivity(startScrabble);
             }
         });
         add_user_button.setOnClickListener(new View.OnClickListener() {

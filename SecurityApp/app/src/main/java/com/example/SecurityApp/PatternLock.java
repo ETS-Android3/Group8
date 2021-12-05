@@ -30,12 +30,14 @@ public class PatternLock extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_pattern_lock);
+
         Intent intent = getIntent();
+        System.out.println(intent.getSerializableExtra("User"));
         db = (DataBase) intent.getSerializableExtra("Database");
         user = (User) intent.getSerializableExtra("User");
+
         setPasswordSwitch = (SwitchCompat) findViewById(R.id.setPassword);
-
-
+        
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
         mPatternLockView.setDotCount(3);
         mPatternLockView.setDotNormalSize((int) ResourceUtils.getDimensionInPx(this, R.dimen.pattern_lock_dot_size));
