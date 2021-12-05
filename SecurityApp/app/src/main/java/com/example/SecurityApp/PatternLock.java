@@ -6,6 +6,8 @@ import androidx.appcompat.widget.SwitchCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.andrognito.patternlockview.PatternLockView;
 import com.andrognito.patternlockview.listener.PatternLockViewListener;
@@ -23,19 +25,22 @@ import io.reactivex.functions.Consumer;
 public class PatternLock extends AppCompatActivity {
     private PatternLockView mPatternLockView;
     private SwitchCompat setPasswordSwitch;
-    private User user;
     private DataBase db;
-
+    private SeekBar seekBar;
+    private TextView rotateText;
+    private int uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_pattern_lock);
 
         Intent intent = getIntent();
-        System.out.println(intent.getSerializableExtra("User"));
-        db = (DataBase) intent.getSerializableExtra("Database");
-        user = (User) intent.getSerializableExtra("User");
 
+        db = (DataBase) intent.getSerializableExtra("Database");
+        uid = intent.getIntExtra("UID", 0);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        rotateText = (TextView) findViewById(R.id.rotateText);
+        rotateText.setText(String.valueOf(seekBar.getProgress()));
         setPasswordSwitch = (SwitchCompat) findViewById(R.id.setPassword);
         
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
@@ -54,6 +59,8 @@ public class PatternLock extends AppCompatActivity {
         mPatternLockView.setInputEnabled(true);
         mPatternLockView.addPatternLockListener(mPatternLockViewListener);
 
+
+
         RxPatternLockView.patternComplete(mPatternLockView)
                 .subscribe(new Consumer<PatternLockCompleteEvent>() {
                     @Override
@@ -62,7 +69,22 @@ public class PatternLock extends AppCompatActivity {
                     }
                 });
 
-
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int pval = 0;
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                pval = progress;
+                rotateText.setText(String.valueOf(pval));
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //write custom code to on start progress
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                rotateText.setText(String.valueOf(pval));
+            }
+        });
 
         RxPatternLockView.patternChanges(mPatternLockView)
                 .subscribe(new Consumer<PatternLockCompoundEvent>() {
@@ -72,7 +94,7 @@ public class PatternLock extends AppCompatActivity {
                             Log.d(getClass().getName(), "Pattern drawing started");
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_PROGRESS) {
                             //Code for rotation
-                            rotate();
+                            rotate(seekBar.getProgress());
 
 
                             Log.d(getClass().getName(), "Pattern progress: " +
@@ -80,12 +102,14 @@ public class PatternLock extends AppCompatActivity {
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_COMPLETE) {
                             Log.d(getClass().getName(), "Pattern complete: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
-
+                            mPatternLockView.setRotation(0);
                             if(!setPasswordSwitch.isChecked()){
                                 patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                             }
                             else{
-                                user.setPatternPassword(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+
+                                db.setPatternPasswordById(uid,PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+
                             }
 
                         } else if (event.getEventType() == PatternLockCompoundEvent.EventType.PATTERN_CLEARED) {
@@ -95,13 +119,13 @@ public class PatternLock extends AppCompatActivity {
                 });
     }
     //Method for handling rotation
-    private void rotate(){
-        mPatternLockView.setRotation(mPatternLockView.getRotation()+5);
+    private void rotate(int amount){
+        mPatternLockView.setRotation(mPatternLockView.getRotation()+amount);
     }
     //Checks if the completed pattern matches the saved pattern password
     private Boolean patternCheck(String pattern){
 
-        if (pattern.equals(user.getPatternPassword())) {
+        if (pattern.equals(db.getPatternPasswordById(uid))) {
             Log.d(getClass().getName(), "Pattern Correct");
             return true;
         }

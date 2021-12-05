@@ -38,6 +38,21 @@ public class DataBase implements Serializable {
     public DataBase() {
         users = getRemoteUsers();
     }
+    //PASSWORD GETTERS AND SETTERS
+    public void setScrabblePasswordById(int id,String password){
+        users.get(id).setScrabblePassword(password);
+        setRemoteUsers();
+    }
+    public String getScrabblePasswordById(int id){
+        return users.get(id).getScrabblePassword();
+    }
+    public void setPatternPasswordById(int id,String password){
+        users.get(id).setPatternPassword(password);
+        setRemoteUsers();
+    }
+    public String getPatternPasswordById(int id){
+        return users.get(id).getPatternPassword();
+    }
 
     public ArrayList<User> getUsers() {
         return users;

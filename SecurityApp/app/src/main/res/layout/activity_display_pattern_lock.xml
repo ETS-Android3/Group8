@@ -11,7 +11,7 @@
         android:id="@+id/patternTitle"
         android:layout_width="411dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/pattern_lock"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -24,16 +24,15 @@
         android:id="@+id/pattern_lock_view"
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:layout_marginTop="204dp"
         android:background="#6A6666"
         android:foregroundTint="#D86363"
         app:correctStateColor="#FF9F00"
         app:dotCount="3"
         app:dotNormalSize="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/patternTitle"
+        app:layout_constraintEnd_toEndOf="@+id/seekBar"
+        app:layout_constraintStart_toStartOf="@+id/seekBar"
+        app:layout_constraintTop_toTopOf="parent"
         app:normalStateColor="#000000"
         app:wrongStateColor="#CD1111"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -42,11 +41,57 @@
         android:id="@+id/setPassword"
         android:layout_width="174dp"
         android:layout_height="59dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="524dp"
         android:text="@string/set_password"
+        app:layout_constraintEnd_toEndOf="@+id/pattern_lock_view"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/pattern_lock_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="213dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="152dp"
+        android:indeterminate="false"
+        android:max="15"
+        app:layout_constraintEnd_toEndOf="@+id/rotateTitle"
+        app:layout_constraintStart_toStartOf="@+id/rotateTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/rotateText"
+        android:layout_width="58dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="152dp"
+        android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pattern_lock_view" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/seekBar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/rotateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="124dp"
+        android:text="Rotation"
+        app:layout_constraintEnd_toEndOf="@+id/patternTitle"
+        app:layout_constraintStart_toStartOf="@+id/patternTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
