@@ -28,7 +28,16 @@ public class DataBase{
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;    // For the result set, if applicable
 
+<<<<<<< Updated upstream
     ArrayList<User> users;
+=======
+    // Query Templates
+    private final static String GET_USERS_QUERY = "SELECT name, id FROM USERS;";
+    private final static String DELETE_USERS_QUERY = "DELETE FROM USERS;";
+    private final static String INSERT_USER_QUERY = "INSERT INTO USERS VALUES (?, ?, ?, ?);";
+
+
+>>>>>>> Stashed changes
     public DataBase() {
         users = getRemoteUsers();
     }
@@ -47,7 +56,7 @@ public class DataBase{
         boolean nameExists = false;
         for(User u:users){if(u.getName().equals(name)) nameExists = true;}
         if(!nameExists) {
-            users.add(new User(name, users.size()));
+            users.add(new User(name, users.size(), "password", "000000"));
             setRemoteUsers();
             return true;
         }
@@ -75,8 +84,12 @@ public class DataBase{
 
             while(resultSet.next())
             {
+<<<<<<< Updated upstream
                 users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
                 //System.out.println("GOT USER");
+=======
+                users.add(new User(resultSet.getString(1),resultSet.getInt(2), resultSet.getString(3),resultSet.getString(4)));
+>>>>>>> Stashed changes
             }
             System.out.println("Got Users");
             System.out.println(users);
@@ -90,6 +103,7 @@ public class DataBase{
         return users;
     }
     private void setRemoteUsers(){
+<<<<<<< Updated upstream
         try
         {
             // Establish the connection.
@@ -104,6 +118,31 @@ public class DataBase{
                 preparedStatement.setInt(1, user.getId());
                 preparedStatement.setString(2, user.getName());
                 preparedStatement.executeUpdate();
+=======
+
+        Thread thread = new Thread( () -> {
+            try {
+                // Establish the connection.
+                connection = DriverManager.getConnection(URL);
+                statement = connection.createStatement();
+
+                // Delete all users for fresh start
+                statement.executeUpdate(DELETE_USERS_QUERY);
+
+                //Insert each user
+                for (User user:users) {
+                    preparedStatement = connection.prepareStatement(INSERT_USER_QUERY);
+                    preparedStatement.setInt(1, user.getId());
+                    preparedStatement.setString(2, user.getName());
+                    preparedStatement.setString(3, user.getScrabblePassword());
+                    preparedStatement.setString(4, user.getPatternPassword());
+                    preparedStatement.executeUpdate();
+                }
+                System.out.println("Inserted Users.");
+                connection.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+>>>>>>> Stashed changes
             }
             System.out.println("Inserted Users.");
             connection.close();
