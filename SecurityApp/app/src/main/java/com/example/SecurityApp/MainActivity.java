@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.regex.Pattern;
+
 import SecurityApp.R;
 
 //CREDITS
@@ -24,6 +26,7 @@ import SecurityApp.R;
 //https://stackoverflow.com/questions/32534076/what-is-the-best-way-to-do-a-button-group-that-can-be-selected-and-activate-inde/32545086
 public class MainActivity extends AppCompatActivity {
     DataBase db;
+    User currentUser;
     Button pattern_lock_button, scrabble_lock_button, add_user_button;
     Spinner user_spinner;
     EditText add_user_text;
@@ -52,19 +55,28 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         user_spinner.setAdapter(adapter);
         adapter.addAll(db.getUserNames());
-
+        user_spinner.setSelection(0);
+        currentUser = db.findUserByName(user_spinner.getSelectedItem().toString());
+        System.out.println("Current User");
+        System.out.println(currentUser);
 
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, PatternLock.class));
+                Intent startPattern = new Intent(MainActivity.this, PatternLock.class);
+                startPattern.putExtra("User", currentUser);
+                startPattern.putExtra("Database", db);
+                startActivity(startPattern);
             }
         });
         scrabble_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ScrabbleLock.class));
+                Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);
+                startScrabble.putExtra("User", currentUser);
+                startScrabble.putExtra("Database", db);
+                startActivity(startScrabble);
             }
         });
         add_user_button.setOnClickListener(new View.OnClickListener() {
