@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.example.SecurityApp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,11 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import SecurityApp.R;
+
 public class display_scrabble_lock extends AppCompatActivity implements View.OnClickListener {
-    private Button[] btn = new Button[15];
+    private final Button[] btn = new Button[15];
     private List<Character> letterList;
     private Button btn_unfocus;
-    private int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
+    private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
             R.id.btn0, R.id.btn13, R.id.btn14, R.id.btn15};

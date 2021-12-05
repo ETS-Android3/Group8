@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.example.SecurityApp;
 
 import android.Manifest;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.util.ArrayList;
+import SecurityApp.R;
 
 //CREDITS
 //https://github.com/aritraroy/PatternLockView

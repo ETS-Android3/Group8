@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myfirstapp">
+    package="SecurityApp">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -10,15 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApp">
         <activity
-            android:name=".display_scrabble_lock"
+            android:name="com.example.SecurityApp.display_scrabble_lock"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName="com.example.SecurityApp.MainActivity"/>
         <activity
-            android:name=".DisplayPatternLock"
+            android:name="com.example.SecurityApp.DisplayPatternLock"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName="com.example.SecurityApp.MainActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.SecurityApp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

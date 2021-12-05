@@ -1,11 +1,10 @@
-package com.example.myfirstapp;
+package com.example.SecurityApp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.andrognito.patternlockview.PatternLockView;
 import com.andrognito.patternlockview.listener.PatternLockViewListener;
@@ -17,8 +16,8 @@ import com.andrognito.rxpatternlockview.events.PatternLockCompoundEvent;
 
 import java.util.List;
 
+import SecurityApp.R;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.operators.single.SingleDelayWithCompletable;
 
 public class DisplayPatternLock extends AppCompatActivity {
     private PatternLockView mPatternLockView;
@@ -105,7 +104,7 @@ public class DisplayPatternLock extends AppCompatActivity {
         }
     }
 
-    private PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
+    private final PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
         @Override
         public void onStarted() {
             Log.d(getClass().getName(), "Pattern drawing started");
