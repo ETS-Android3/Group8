@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
+/**
+ * The class that handles Database access and control
+ */
 public class DataBase {
     // Properties
     ArrayList<User> users;
@@ -71,25 +73,22 @@ public class DataBase {
     private ArrayList<User> getRemoteUsers() {
         ArrayList<User> users = new ArrayList<>();
 
-        // Perform the Database operation async, to not slow down the app
-        Thread thread = new Thread( () -> {
-            try {
-                // Establish the connection.
-                connection = DriverManager.getConnection(URL);
-                statement = connection.createStatement();
-                resultSet = statement.executeQuery(GET_USERS_QUERY);
+        try {
+            // Establish the connection.
+            connection = DriverManager.getConnection(URL);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(GET_USERS_QUERY);
 
-                while(resultSet.next())
-                {
-                    users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
-                }
-                System.out.println("Got Users");
-                System.out.println(users);
-                connection.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            while(resultSet.next())
+            {
+                users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
             }
-        });
+            System.out.println("Got Users");
+            System.out.println(users);
+            connection.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         return users;
     }
@@ -118,5 +117,6 @@ public class DataBase {
                 ex.printStackTrace();
             }
         });
+        thread.start();
     }
 }
