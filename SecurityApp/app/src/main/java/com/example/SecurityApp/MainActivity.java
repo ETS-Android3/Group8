@@ -58,13 +58,13 @@ public class MainActivity extends AppCompatActivity {
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, DisplayPatternLock.class));
+                startActivity(new Intent(MainActivity.this, PatternLock.class));
             }
         });
         scrabble_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, display_scrabble_lock.class));
+                startActivity(new Intent(MainActivity.this, ScrabbleLock.class));
             }
         });
         add_user_button.setOnClickListener(new View.OnClickListener() {

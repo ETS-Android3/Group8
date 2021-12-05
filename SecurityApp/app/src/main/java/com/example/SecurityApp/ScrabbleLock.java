@@ -14,7 +14,7 @@ import java.util.Random;
 
 import SecurityApp.R;
 
-public class display_scrabble_lock extends AppCompatActivity implements View.OnClickListener {
+public class ScrabbleLock extends AppCompatActivity implements View.OnClickListener {
     private final Button[] btn = new Button[15];
     private List<Character> letterList;
     private Button btn_unfocus;

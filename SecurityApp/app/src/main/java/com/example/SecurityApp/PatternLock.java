@@ -19,7 +19,7 @@ import java.util.List;
 import SecurityApp.R;
 import io.reactivex.functions.Consumer;
 
-public class DisplayPatternLock extends AppCompatActivity {
+public class PatternLock extends AppCompatActivity {
     private PatternLockView mPatternLockView;
     private SwitchCompat setPasswordSwitch;
     String password;

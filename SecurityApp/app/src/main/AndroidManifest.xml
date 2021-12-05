@@ -10,11 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SecurityApp">
         <activity
-            android:name="com.example.SecurityApp.display_scrabble_lock"
+            android:name="com.example.SecurityApp.ScrabbleLock"
             android:exported="false"
             android:parentActivityName="com.example.SecurityApp.MainActivity"/>
         <activity
-            android:name="com.example.SecurityApp.DisplayPatternLock"
+            android:name="com.example.SecurityApp.PatternLock"
             android:exported="false"
             android:parentActivityName="com.example.SecurityApp.MainActivity" />
         <activity
