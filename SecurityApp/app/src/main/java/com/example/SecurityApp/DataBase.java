@@ -63,6 +63,7 @@ public class DataBase{
 
     }
     private ArrayList<User> getRemoteUsers(){
+
         ArrayList<User> users = new ArrayList<>();
         try
         {
@@ -79,11 +80,13 @@ public class DataBase{
             }
             System.out.println("Got Users");
             System.out.println(users);
+            connection.close();
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
+
         return users;
     }
     private void setRemoteUsers(){
@@ -103,6 +106,7 @@ public class DataBase{
                 preparedStatement.executeUpdate();
             }
             System.out.println("Inserted Users.");
+            connection.close();
         }
         catch (Exception ex)
         {

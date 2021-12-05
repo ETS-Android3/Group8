@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyFirstApp">
+        android:theme="@style/Theme.SecurityApp">
         <activity
             android:name="com.example.SecurityApp.display_scrabble_lock"
             android:exported="false"

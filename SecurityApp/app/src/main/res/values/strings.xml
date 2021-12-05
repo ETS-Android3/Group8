@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My FirstApp</string>
+    <string name="app_name">Security Project</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
     <string name="pattern_lock">Pattern Lock</string>
@@ -7,7 +7,4 @@
     <string name="scrabble_lock">Scrabble Lock</string>
     <string name="random_pin_lock">Random-Pin Lock</string>
     <string name="set_password">Set Password?</string>
-    <string-array name="users">
-        <item>Bob</item>
-    </string-array>
 </resources>

@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         user_spinner.setAdapter(adapter);
         adapter.addAll(db.getUserNames());
+
+
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
