@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,13 +17,16 @@ import java.util.Random;
 import SecurityApp.R;
 
 public class ScrabbleLock extends AppCompatActivity implements View.OnClickListener {
+    // Properties
     private final Button[] btn = new Button[15];
     private List<Character> letterList;
+    private List<Character> testPassword;
     private Button btn_unfocus;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
             R.id.btn0, R.id.btn13, R.id.btn14, R.id.btn15};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,36 +41,34 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
             btn[i].setText(String.valueOf(letterList.get(i)));
         }
 
-
+        // Clear the edittext field
+        EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
+        editText.setText("");
     }
     @Override
     public void onClick(View v) {
-        //setForcus(btn_unfocus, (Button) findViewById(v.getId()));
-        //Or use switch
-        switch (v.getId()){
-            case R.id.btn0:
-                System.out.println(btn[0].getText());
-                break;
+        // Set focus on the button clicked
+        Button clicked = (Button)findViewById(v.getId());
+        setFocus(btn_unfocus, (Button)findViewById(v.getId()));
 
-            case R.id.btn1:
-                setFocus(btn_unfocus, btn[1]);
-                break;
+        // Add the character to the edittext string
+        EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
+        editText.append(clicked.getText());
 
-            case R.id.btn2:
-                setFocus(btn_unfocus, btn[2]);
-                break;
-
-            case R.id.btn3:
-                setFocus(btn_unfocus, btn[3]);
-                break;
-        }
+        // TODO: Add the character clicked to the letters list/check if it belongs
+        // TODO: Check why the bottom right and left buttons dont work
     }
 
     private void setFocus(Button btn_unfocus, Button btn_focus){
-        btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
-        btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));
+
+        if(btn_unfocus != null) {
+            btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
+            btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));
+        }
+
         btn_focus.setTextColor(Color.rgb(255, 255, 255));
         btn_focus.setBackgroundColor(Color.rgb(3, 106, 150));
+
         this.btn_unfocus = btn_focus;
     }
 
