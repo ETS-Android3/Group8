@@ -26,10 +26,10 @@ import SecurityApp.R;
 //https://stackoverflow.com/questions/32534076/what-is-the-best-way-to-do-a-button-group-that-can-be-selected-and-activate-inde/32545086
 public class MainActivity extends AppCompatActivity {
     DataBase db;
-    User currentUser;
     Button pattern_lock_button, scrabble_lock_button, add_user_button;
     Spinner user_spinner;
     EditText add_user_text;
+    int currentUserID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         //Create the database
         db = new DataBase();
+
         //Create the widgets
         pattern_lock_button = (Button)findViewById(R.id.pattern_lock_button);
         scrabble_lock_button = (Button)findViewById(R.id.scrabble_lock_button);
@@ -56,26 +57,25 @@ public class MainActivity extends AppCompatActivity {
         user_spinner.setAdapter(adapter);
         adapter.addAll(db.getUserNames());
         user_spinner.setSelection(0);
-        currentUser = db.findUserByName(user_spinner.getSelectedItem().toString());
-        System.out.println("Current User");
-        System.out.println(currentUser);
+        currentUserID = db.findUserByName(user_spinner.getSelectedItem().toString()).getId();
+
 
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent startPattern = new Intent(MainActivity.this, PatternLock.class);
-                startPattern.putExtra("User", currentUser);
                 startPattern.putExtra("Database", db);
+                startPattern.putExtra("UID", currentUserID);
                 startActivity(startPattern);
             }
         });
         scrabble_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);
-                startScrabble.putExtra("User", currentUser);
+                Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);;
                 startScrabble.putExtra("Database", db);
+                startScrabble.putExtra("UID", currentUserID);
                 startActivity(startScrabble);
             }
         });

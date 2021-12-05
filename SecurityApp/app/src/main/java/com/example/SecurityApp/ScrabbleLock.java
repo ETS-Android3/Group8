@@ -24,8 +24,8 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     private SwitchCompat setRandomSwitch;
     private List<Character> letterList;
     private Button btn_unfocus;
-    private User user;
     private DataBase db;
+    private int uid;
     private boolean randomize;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
@@ -41,9 +41,8 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         randomize = false;
         Intent intent = getIntent();
         db = (DataBase) intent.getSerializableExtra("Database");
-        user = (User) intent.getSerializableExtra("User");
-
-        letterList = generateLetters(user.getScrabblePassword());
+        uid = intent.getIntExtra("UID", 0);
+        letterList = generateLetters(db.getScrabblePasswordById(uid));
 
         setRandomSwitch = (SwitchCompat) findViewById(R.id.setRandomSwitch);
         setRandomSwitch.setOnClickListener(this);
@@ -66,7 +65,7 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
             case R.id.setRandomSwitch:
                 System.out.println("Switch");
                 randomize = setRandomSwitch.isChecked();
-                letterList = generateLetters(user.getScrabblePassword());
+                letterList = generateLetters(db.getScrabblePasswordById(uid));
                 for(int i = 0; i < btn.length; i++){
                     btn[i].setText(String.valueOf(letterList.get(i)));
                 }
