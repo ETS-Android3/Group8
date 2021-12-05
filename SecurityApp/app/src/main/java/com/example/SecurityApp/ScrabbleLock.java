@@ -1,6 +1,7 @@
 package com.example.SecurityApp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import SecurityApp.R;
 
 public class ScrabbleLock extends AppCompatActivity implements View.OnClickListener {
     private final Button[] btn = new Button[26];
+    private SwitchCompat setRandomSwitch;
     private List<Character> letterList;
     private Button btn_unfocus;
     private User user;
@@ -36,13 +38,15 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_scrabble_lock);
-        randomize = true;
+        randomize = false;
         Intent intent = getIntent();
         db = (DataBase) intent.getSerializableExtra("Database");
         user = (User) intent.getSerializableExtra("User");
 
         letterList = generateLetters(user.getScrabblePassword());
-        System.out.println(letterList);
+
+        setRandomSwitch = (SwitchCompat) findViewById(R.id.setRandomSwitch);
+        setRandomSwitch.setOnClickListener(this);
         for(int i = 0; i < btn.length; i++){
             System.out.println(i);
             btn[i] = (Button) findViewById(btn_id[i]);
@@ -57,7 +61,16 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         //setForcus(btn_unfocus, (Button) findViewById(v.getId()));
         //Or use switch
+        System.out.println(v.getId());
         switch (v.getId()){
+            case R.id.setRandomSwitch:
+                System.out.println("Switch");
+                randomize = setRandomSwitch.isChecked();
+                letterList = generateLetters(user.getScrabblePassword());
+                for(int i = 0; i < btn.length; i++){
+                    btn[i].setText(String.valueOf(letterList.get(i)));
+                }
+
             case R.id.btn0:
                 System.out.println(btn[0].getText());
                 break;
