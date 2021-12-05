@@ -108,7 +108,7 @@ public class PatternLock extends AppCompatActivity {
                             Log.d(getClass().getName(), "Pattern complete: " +
                                     PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                             endTime = System.currentTimeMillis();
-                            elapsedTime = endTime - startTime;
+                            elapsedTime = ((double) (endTime - startTime)) / 1000;
                             mPatternLockView.setRotation(0);
                             if(!setPasswordSwitch.isChecked()){
                                 patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
