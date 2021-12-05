@@ -45,9 +45,15 @@ public class DataBase{
         }
         return user_names;
     }
-    public void addUser(String name){
-        users.add(new User(name,users.size()));
-        setRemoteUsers();
+    public boolean addUser(String name){
+        boolean nameExists = false;
+        for(User u:users){if(u.getName().equals(name)) nameExists = true;}
+        if(!nameExists) {
+            users.add(new User(name, users.size()));
+            setRemoteUsers();
+            return true;
+        }
+        return false;
     }
 
     public void setUsers(ArrayList<User> users) {

@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     Button pattern_lock_button, scrabble_lock_button, add_user_button;
     Spinner user_spinner;
     EditText add_user_text;
-    ArrayList user_names;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +47,11 @@ public class MainActivity extends AppCompatActivity {
         add_user_button = (Button)findViewById(R.id.add_user_button);
         user_spinner = findViewById(R.id.user_spinner);
         add_user_text = findViewById(R.id.add_user_text) ;
-
-        user_names = db.getUserNames();
+        //Create adapter for spinner
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         user_spinner.setAdapter(adapter);
-        adapter.addAll(user_names);
+        adapter.addAll(db.getUserNames());
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,18 +68,16 @@ public class MainActivity extends AppCompatActivity {
         add_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s = add_user_text.getText().toString();
-                if(!user_names.contains(s)) user_names.add(s);
-                System.out.println(user_names);
-                adapter.clear();
-                adapter.addAll(user_names);
-                db.addUser(s);
+                if(db.addUser(add_user_text.getText().toString())){
+                    adapter.clear();
+                    adapter.addAll(db.getUserNames());
+                }
             }
         });
 
 
     }
-    /** Called when the user taps the Pattern Lock button */
+    /** Called when the user taps the Lock button */
     public void displayLockScreen(View view) {
       setContentView(view);
     }
