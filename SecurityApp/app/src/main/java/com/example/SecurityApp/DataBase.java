@@ -30,11 +30,13 @@ public class DataBase {
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;    // For the result set, if applicable
 
+
+    ArrayList<User> users;
+
     // Query Templates
     private final static String GET_USERS_QUERY = "SELECT name, id FROM USERS;";
     private final static String DELETE_USERS_QUERY = "DELETE FROM USERS;";
-    private final static String INSERT_USER_QUERY = "INSERT INTO USERS VALUES (?, ?);";
-
+    private final static String INSERT_USER_QUERY = "INSERT INTO USERS VALUES (?, ?, ?, ?);";
 
     public DataBase() {
         users = getRemoteUsers();
@@ -56,7 +58,7 @@ public class DataBase {
         boolean nameExists = false;
         for(User u:users){if(u.getName().equals(name)) nameExists = true;}
         if(!nameExists) {
-            users.add(new User(name, users.size()));
+            users.add(new User(name, users.size(), "password", "000000"));
             setRemoteUsers();
             return true;
         }
@@ -81,7 +83,7 @@ public class DataBase {
 
             while(resultSet.next())
             {
-                users.add(new User(resultSet.getString(1),resultSet.getInt(2)));
+                users.add(new User(resultSet.getString(1),resultSet.getInt(2), resultSet.getString(3),resultSet.getString(4)));
             }
             System.out.println("Got Users");
             System.out.println(users);
@@ -95,21 +97,23 @@ public class DataBase {
 
     private void setRemoteUsers(){
 
-        Thread thread = new Thread( () -> {
-            try {
-                // Establish the connection.
-                connection = DriverManager.getConnection(URL);
-                statement = connection.createStatement();
-
-                // Delete all users for fresh start
-                statement.executeUpdate(DELETE_USERS_QUERY);
-
-                //Insert each user
-                for (User user:users) {
-                    preparedStatement = connection.prepareStatement(INSERT_USER_QUERY);
-                    preparedStatement.setInt(1, user.getId());
-                    preparedStatement.setString(2, user.getName());
-                    preparedStatement.executeUpdate();
+  Thread thread = new Thread( () -> {
+        try
+        {
+            // Establish the connection.
+            connection = DriverManager.getConnection(URL);
+            String sql_delete = "DELETE FROM USERS;";
+            String sql_insert = "INSERT INTO USERS VALUES (?, ?);";
+            statement = connection.createStatement();
+            statement.executeUpdate(sql_delete);
+            //Insert each user
+            for (User user:users) {
+                preparedStatement = connection.prepareStatement(sql_insert);
+                preparedStatement.setInt(1, user.getId());
+                preparedStatement.setString(2, user.getName());
+                preparedStatement.setString(3, user.getScrabblePassword());
+                preparedStatement.setString(4, user.getPatternPassword());
+                preparedStatement.executeUpdate();
                 }
                 System.out.println("Inserted Users.");
                 connection.close();

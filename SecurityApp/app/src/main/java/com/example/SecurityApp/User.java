@@ -1,10 +1,14 @@
 package com.example.SecurityApp;
 
+import java.util.ArrayList;
+
 public class User {
     private String name;
     private int id;
+    private String scrabblePassword;
+    private String patternPassword;
 
-    public User(String name, int id) {
+    public User(String name, int id, String scrabblePassword, String patternPassword) {
         this.name = name;
         this.id = id;
     }
@@ -31,5 +35,21 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getScrabblePassword() {
+        return scrabblePassword;
+    }
+
+    public void setScrabblePassword(String scrabblePassword) {
+        this.scrabblePassword = scrabblePassword;
+    }
+
+    public String getPatternPassword() {
+        return patternPassword;
+    }
+
+    public void setPatternPassword(String patternPassword) {
+        this.patternPassword = patternPassword;
     }
 }
