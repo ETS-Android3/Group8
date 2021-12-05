@@ -1,5 +1,6 @@
 package com.example.SecurityApp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -8,14 +9,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 import SecurityApp.R;
 
@@ -23,10 +21,16 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     private final Button[] btn = new Button[26];
     private SwitchCompat setRandomSwitch;
     private List<Character> letterList;
+    private long startTime, endTime;
+    private double elapsedTime;
+    private boolean isFirstClick = true;
     private Button btn_unfocus;
     private DataBase db;
+    StringBuilder testPassword = new StringBuilder();
     private int uid;
     private boolean randomize;
+    private Button enterButton;
+    private SwitchCompat setScrabblePassword;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
@@ -42,10 +46,20 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         Intent intent = getIntent();
         db = (DataBase) intent.getSerializableExtra("Database");
         uid = intent.getIntExtra("UID", 0);
+
+        // Clear the edittext field
+        EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
+        editText.setText("");
+
         letterList = generateLetters(db.getScrabblePasswordById(uid));
 
         setRandomSwitch = (SwitchCompat) findViewById(R.id.setRandomSwitch);
         setRandomSwitch.setOnClickListener(this);
+
+        enterButton = (Button)findViewById(R.id.enter_button);
+        enterButton.setOnClickListener(this);
+        setScrabblePassword = (SwitchCompat) findViewById(R.id.setScrabblePassword);
+
         for(int i = 0; i < btn.length; i++){
             System.out.println(i);
             btn[i] = (Button) findViewById(btn_id[i]);
@@ -58,33 +72,104 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-        //setForcus(btn_unfocus, (Button) findViewById(v.getId()));
-        //Or use switch
-        System.out.println(v.getId());
-        switch (v.getId()){
-            case R.id.setRandomSwitch:
-                System.out.println("Switch");
-                randomize = setRandomSwitch.isChecked();
-                letterList = generateLetters(db.getScrabblePasswordById(uid));
-                for(int i = 0; i < btn.length; i++){
-                    btn[i].setText(String.valueOf(letterList.get(i)));
+        // First check if it was the random switch
+        if (v.getId() == R.id.setRandomSwitch) {
+            randomize = setRandomSwitch.isChecked();
+            System.out.println("Randomize is " + randomize);
+            letterList = generateLetters(db.getScrabblePasswordById(uid));
+            for (int i = 0; i < btn.length; i++) {
+                btn[i].setText(String.valueOf(letterList.get(i)));
+            }
+
+            // Can just return since the rest of the actions have to do with buttons
+            return;
+        }
+
+        // Find the button clicked
+        Button clicked = (Button) findViewById(v.getId());
+        EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
+
+        // Check if it is the first click, if so start a timer
+        if (isFirstClick) {
+            // Start timer
+            startTime = System.currentTimeMillis();
+            System.out.println("Starting Timer");
+            isFirstClick = false;
+        }
+
+        // Check if it was the enter button
+        if (v.getId() == R.id.enter_button) {
+            // Stop timer
+            endTime = System.currentTimeMillis();
+            elapsedTime = ((double) (endTime - startTime)) / 1000;
+            System.out.println(String.format("Ending timer...\nElapsed Time was: %.2f", elapsedTime));
+
+            // Clear the edit text
+            editText.setText("");
+
+
+            // Check switch to see if password is being set or checked
+
+            if (setScrabblePassword.isChecked()) {
+                // Set password mode
+                db.setScrabblePasswordById(uid,testPassword.toString());
+                System.out.println("Setting " + db.getUsers().get(uid).getName() + "'s password to be " + testPassword);
+                testPassword = new StringBuilder();
+                isFirstClick=true;
+            } else {
+                // Check password mode
+                // Test the data or set it as the password
+                if (testPassword(testPassword.toString(), db.getScrabblePasswordById(uid))) {
+                    // Passwords matched
+                    System.out.println("Passwords matched.");
+
+                    // Display a popup
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(String.format("Password was Correct!\nElapsed Time: %.3f", elapsedTime));
+                    builder.setCancelable(true);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    isFirstClick=true;
+                    // TODO: Send attempt to the database
+
+                } else {
+                    // Passwords did not match
+                    // Clear testpassword
+                    testPassword.delete(0, testPassword.length());
+                    System.out.println("Incorrect password. Try again");
+
+                    // Reset all button colors
+                    for (int i = 0; i < 26; i++) {
+                        btn[i].setBackgroundColor(Color.rgb(100, 207, 207));
+                        btn[i].setTextColor(Color.WHITE);
+                    }
+                    btn_unfocus = null;
+
+                    // Display a popup
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(String.format("Incorrect Password\nElapsed Time: %.3f", elapsedTime));
+                    builder.setCancelable(true);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    // TODO: Send data to the database
+
+                    // Make the next click start the timer again
+                    isFirstClick = true;
                 }
+            }
+        } else {
+            // Was one of the other buttons clicked
+            // Set focus on the button clicked
+            //setFocus(btn_unfocus, clicked);
 
-            case R.id.btn0:
-                System.out.println(btn[0].getText());
-                break;
+            // Add the character to the edittext string
+            editText.append(clicked.getText());
 
-            case R.id.btn1:
-                setFocus(btn_unfocus, btn[1]);
-                break;
+            // Add the character to the testpassword for testing
+            testPassword.append(clicked.getText());
 
-            case R.id.btn2:
-                setFocus(btn_unfocus, btn[2]);
-                break;
-
-            case R.id.btn3:
-                setFocus(btn_unfocus, btn[3]);
-                break;
+            System.out.println("Current password: " + testPassword);
         }
     }
 
@@ -100,24 +185,7 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         ArrayList<Character> letters = new ArrayList<Character>();
 
         if(randomize){
-            /*
-            String s = "";
-            Random r = new Random();
-            //Get unique characters from password
-            Set<Character> origSet = new LinkedHashSet<Character>();
-            for(char c:origSet) {
-                s=s+c;
-            }
-            for (int i = 0; i < s.length(); i++) {
-                origSet.add(s.charAt(i));
-            }
-            for(int i = 0; i < s.length(); i++){
-                letters.add(s.charAt(i));
-            }
-            for(int i = s.length(); i < 26; i++){
-                letters.add((char)(r.nextInt(26) + 'a'));
-            }
-            */
+
             for(int i = 0; i < 26; i++){
                 letters.add((char)('A' + i));
             }
@@ -129,4 +197,9 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         }
         return letters;
     }
+    // Tests the input password to check if it matches
+    private boolean testPassword(String test, String actual) {
+        return test.equals(actual);
+    }
+
 }
