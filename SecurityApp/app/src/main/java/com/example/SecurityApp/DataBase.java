@@ -118,7 +118,7 @@ public class DataBase implements Serializable {
         boolean nameExists = false;
         for(User u:users){if(u.getName().equals(name)) nameExists = true;}
         if(!nameExists) {
-            User user = new User(name, users.size(), "password", "123456");
+            User user = new User(name, users.size(), "PASS", "123456");
             users.add(user);
             addRemoteUser(user);
             return true;

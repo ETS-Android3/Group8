@@ -63,13 +63,14 @@ public class MainActivity extends AppCompatActivity {
         user_spinner.setAdapter(adapter);
         adapter.addAll(db.getUserNames());
         user_spinner.setSelection(0);
-        currentUserID = db.findUserByName(user_spinner.getSelectedItem().toString()).getId();
+
 
 
         // Button Listeners
         pattern_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentUserID = db.findUserByName(user_spinner.getSelectedItem().toString()).getId();
                 Intent startPattern = new Intent(MainActivity.this, PatternLock.class);
                 startPattern.putExtra("Database", json);
                 startPattern.putExtra("UID", currentUserID);
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         scrabble_lock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentUserID = db.findUserByName(user_spinner.getSelectedItem().toString()).getId();
                 Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);;
                 startScrabble.putExtra("Database", json);
                 startScrabble.putExtra("UID", currentUserID);
