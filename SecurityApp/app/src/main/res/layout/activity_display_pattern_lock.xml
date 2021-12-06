@@ -7,6 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".DisplayPatternLock">
 
+    <Button
+        android:id="@+id/startTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="524dp"
+        android:text="Start Test"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.097"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/testNo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/startTest2"
+        app:layout_constraintStart_toStartOf="@+id/startTest2"
+        app:layout_constraintTop_toBottomOf="@+id/startTest2" />
+
     <TextView
         android:id="@+id/patternTitle"
         android:layout_width="411dp"
@@ -44,7 +64,7 @@
         android:layout_marginTop="524dp"
         android:text="@string/set_password"
         app:layout_constraintEnd_toEndOf="@+id/pattern_lock_view"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.976"
         app:layout_constraintStart_toStartOf="@+id/pattern_lock_view"
         app:layout_constraintTop_toTopOf="parent" />
 

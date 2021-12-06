@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +36,13 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     private boolean randomize;
     private Button enterButton;
     private SwitchCompat setScrabblePassword;
+    private EditText editText;
     private Gson gson;
     private String json;
+    private Button startTest;
+    private TextView testNo;
+    private int testNumber;
+    private ArrayList<String> testPasswords;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
@@ -52,9 +60,28 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
         db = gson.fromJson(json, DataBase.class);
         uid = intent.getIntExtra("UID", 0);
         randomize = false;
+        //Testing Buttons
+        testNo = (TextView) findViewById(R.id.testNo);
+        testNo.setText("Press to Begin");
+        startTest = (Button) findViewById(R.id.startTest);
+        startTest.setOnClickListener(this);
+        testPasswords = new ArrayList<String>();
+        //Unscrambled
+        testPasswords.add("SECUR");
+        testPasswords.add("UPDOG");
+        testPasswords.add("SHESH");
+        testPasswords.add("CRYPT");
+        testPasswords.add("DRSNG");
+        //Scrambled
+        testPasswords.add("MDFVE");
+        testPasswords.add("SIXTY");
+        testPasswords.add("NIGHN");
+        testPasswords.add("PASSS");
+        testPasswords.add("WORDS");
         // Clear the edittext field
-        EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
+        editText = (EditText) findViewById(R.id.editTextTextPassword);
         editText.setText("");
+        testNumber = 0;
 
         letterList = generateLetters(db.getScrabblePasswordById(uid));
 
@@ -167,7 +194,12 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                 }
                 db.newAttempt(uid,elapsedTime,"Scrabble",result,testPassword.toString(), 0, randomize);
             }
-        } else {
+        }
+        else if(v.getId() == R.id.startTest){
+            nextTest();
+            isFirstClick = true;
+        }
+        else {
             // Was one of the other buttons clicked
             // Set focus on the button clicked
             //setFocus(btn_unfocus, clicked);
@@ -181,7 +213,28 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
             System.out.println("Current password: " + testPassword);
         }
     }
+    private void nextTest(){
+        testNumber++;
+        System.out.println("Next Test");
+        //Unscrambled
+        if(testNumber <= 5){
+            testNo.setText("Unscrambled Test #: " + testNumber);
+            if(setRandomSwitch.isChecked()) setRandomSwitch.performClick();
+        }
+        //Scrambled
+        if(testNumber > 5){
+            testNo.setText("Unscrambled Test #: " + testNumber);
+            if(!setRandomSwitch.isChecked())setRandomSwitch.performClick();
+        }
+        //Reset Test
+        if(testNumber > 10){
+            testNumber = 0;
+            testNo.setText("Tests Complete! Press to restart.");
+            return;
+        }
+        db.setScrabblePasswordById(uid, testPasswords.get(testNumber-1));
 
+    }
     private void setFocus(Button btn_unfocus, Button btn_focus){
         btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
         btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));

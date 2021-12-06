@@ -7,6 +7,8 @@ import androidx.appcompat.widget.SwitchCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -19,12 +21,13 @@ import com.andrognito.rxpatternlockview.events.PatternLockCompleteEvent;
 import com.andrognito.rxpatternlockview.events.PatternLockCompoundEvent;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import SecurityApp.R;
 import io.reactivex.functions.Consumer;
 
-public class PatternLock extends AppCompatActivity {
+public class PatternLock extends AppCompatActivity implements View.OnClickListener {
     private PatternLockView mPatternLockView;
     private SwitchCompat setPasswordSwitch;
     private DataBase db;
@@ -35,6 +38,10 @@ public class PatternLock extends AppCompatActivity {
     private double elapsedTime;
     private Gson gson;
     private String json;
+    private TextView testNo2;
+    private Button startTest2;
+    private ArrayList<String> testPasswords;
+    private int testNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +73,25 @@ public class PatternLock extends AppCompatActivity {
         mPatternLockView.setInputEnabled(true);
         mPatternLockView.addPatternLockListener(mPatternLockViewListener);
 
+        testNumber = 0;
+        //Testing Buttons
+        testNo2 = (TextView) findViewById(R.id.testNo2);
+        testNo2.setText("Press to Begin");
+        startTest2 = (Button) findViewById(R.id.startTest2);
+        startTest2.setOnClickListener(this);
+        testPasswords = new ArrayList<String>();
+        //0 Rotation
+        testPasswords.add("01234");
+        testPasswords.add("43210");
+        testPasswords.add("01246");
+        testPasswords.add("05876");
+        testPasswords.add("23487");
+        //15 Rotation
+        testPasswords.add("25814");
+        testPasswords.add("41852");
+        testPasswords.add("25840");
+        testPasswords.add("03672");
+        testPasswords.add("36418");
 
 
         RxPatternLockView.patternComplete(mPatternLockView)
@@ -127,10 +153,38 @@ public class PatternLock extends AppCompatActivity {
                     }
                 });
     }
-
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.startTest2){
+            nextTest();
+        }
+    }
     //Method for handling rotation
     private void rotate(int amount){
         mPatternLockView.setRotation(mPatternLockView.getRotation()+amount);
+    }
+
+    private void nextTest(){
+        testNumber++;
+        System.out.println("Next Test");
+        //0 Rotation
+        if(testNumber <= 5){
+            testNo2.setText("Unscrambled Test #: " + testNumber);
+            if(seekBar.getProgress() != 0) seekBar.setProgress(0);
+        }
+        //15 Rotation
+        if(testNumber > 5){
+            testNo2.setText("Unscrambled Test #: " + testNumber);
+            if(seekBar.getProgress() != 15) seekBar.setProgress(15);
+        }
+        //Reset Test
+        if(testNumber > 10){
+            testNumber = 0;
+            testNo2.setText("Tests Complete! Press to restart.");
+            return;
+        }
+        db.setPatternPasswordById(uid, testPasswords.get(testNumber-1));
+
     }
     //Checks if the completed pattern matches the saved pattern password
     private Boolean patternCheck(String pattern){
