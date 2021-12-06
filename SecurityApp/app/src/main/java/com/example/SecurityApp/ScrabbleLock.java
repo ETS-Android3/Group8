@@ -166,13 +166,9 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                     AlertDialog alert = builder.create();
                     alert.show();
                     isFirstClick=true;
-                    testPassword.delete(0, testPassword.length());
-
 
                 } else {
-                    // Passwords did not match
-                    // Clear testpassword
-                    testPassword.delete(0, testPassword.length());
+                    // Passwords did not matc
                     System.out.println("Incorrect password. Try again");
 
                     // Reset all button colors
@@ -193,6 +189,7 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                     isFirstClick = true;
                 }
                 db.newAttempt(uid,elapsedTime,"Scrabble",result,testPassword.toString(), 0, randomize);
+                testPassword.delete(0, testPassword.length());
             }
         }
         else if(v.getId() == R.id.startTest){
