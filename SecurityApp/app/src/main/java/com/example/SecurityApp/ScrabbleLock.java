@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,11 +28,13 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     private boolean isFirstClick = true;
     private Button btn_unfocus;
     private DataBase db;
-    StringBuilder testPassword = new StringBuilder();
+    private StringBuilder testPassword = new StringBuilder();
     private int uid;
     private boolean randomize;
     private Button enterButton;
     private SwitchCompat setScrabblePassword;
+    private Gson gson;
+    private String json;
     private final int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
             R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
             R.id.btn8, R.id.btn9, R.id.btn10, R.id.btn11,
@@ -42,11 +46,12 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_scrabble_lock);
-        randomize = false;
+        gson = new Gson();
         Intent intent = getIntent();
-        db = (DataBase) intent.getSerializableExtra("Database");
+        json = intent.getStringExtra("Database");
+        db = gson.fromJson(json, DataBase.class);
         uid = intent.getIntExtra("UID", 0);
-
+        randomize = false;
         // Clear the edittext field
         EditText editText = (EditText) findViewById(R.id.editTextTextPassword);
         editText.setText("");
@@ -159,7 +164,7 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                     // Make the next click start the timer again
                     isFirstClick = true;
                 }
-                db.newAttempt(uid,elapsedTime,"Scrabble",result,testPassword.toString());
+                db.newAttempt(uid,elapsedTime,"Scrabble",result,testPassword.toString(), 0, randomize);
             }
         } else {
             // Was one of the other buttons clicked

@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.gson.Gson;
+
 import java.util.regex.Pattern;
 
 import SecurityApp.R;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Spinner user_spinner;
     EditText add_user_text;
     int currentUserID;
+    Gson gson;
+    String json;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         //Create the database
         db = new DataBase();
+        gson = new Gson();
+        json = gson.toJson(db);
 
         //Create the widgets
         pattern_lock_button = (Button)findViewById(R.id.pattern_lock_button);
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent startPattern = new Intent(MainActivity.this, PatternLock.class);
-                startPattern.putExtra("Database", db);
+                startPattern.putExtra("Database", json);
                 startPattern.putExtra("UID", currentUserID);
                 startActivity(startPattern);
             }
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent startScrabble = new Intent(MainActivity.this, ScrabbleLock.class);;
-                startScrabble.putExtra("Database", db);
+                startScrabble.putExtra("Database", json);
                 startScrabble.putExtra("UID", currentUserID);
                 startActivity(startScrabble);
             }

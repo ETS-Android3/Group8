@@ -1,20 +1,22 @@
 package com.example.SecurityApp;
 
-import java.util.ArrayList;
-
 public class Attempt {
     private int id;
     private double attemptTime;
     private String lockType;
     private boolean unlockSuccess;
     private String unlockPattern;
+    private int rotation;
+    private boolean randomized;
 
-    public Attempt(int id, double attemptTime, String lockType, boolean unlockSuccess, String unlockPattern) {
+    public Attempt(int id, double attemptTime, boolean unlockSuccess, String lockType, String unlockPattern, int rotation, boolean randomized) {
         this.id = id;
         this.attemptTime = attemptTime;
         this.lockType = lockType;
         this.unlockSuccess = unlockSuccess;
         this.unlockPattern = unlockPattern;
+        this.rotation = rotation;
+        this.randomized = randomized;
     }
     public int getId() {
         return id;
@@ -22,6 +24,14 @@ public class Attempt {
 
     public double getAttemptTime() {
         return attemptTime;
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public boolean isRandomized() {
+        return randomized;
     }
 
     public String getLockType() {

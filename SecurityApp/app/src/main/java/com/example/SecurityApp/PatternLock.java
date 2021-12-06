@@ -17,6 +17,7 @@ import com.andrognito.patternlockview.utils.ResourceUtils;
 import com.andrognito.rxpatternlockview.RxPatternLockView;
 import com.andrognito.rxpatternlockview.events.PatternLockCompleteEvent;
 import com.andrognito.rxpatternlockview.events.PatternLockCompoundEvent;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -32,13 +33,17 @@ public class PatternLock extends AppCompatActivity {
     private int uid;
     private long startTime, endTime;
     private double elapsedTime;
+    private Gson gson;
+    private String json;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_pattern_lock);
 
+        gson = new Gson();
         Intent intent = getIntent();
-        db = (DataBase) intent.getSerializableExtra("Database");
+        json = intent.getStringExtra("Database");
+        db = gson.fromJson(json, DataBase.class);
         uid = intent.getIntExtra("UID", 0);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         rotateText = (TextView) findViewById(R.id.rotateText);
@@ -109,7 +114,7 @@ public class PatternLock extends AppCompatActivity {
                                 endTime = System.currentTimeMillis();
                                 elapsedTime = ((double) (endTime - startTime)) / 1000;
                                 boolean result = patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
-                                db.newAttempt(uid,elapsedTime,"Pattern",result,PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
+                                db.newAttempt(uid,elapsedTime,"Pattern",result,PatternLockUtils.patternToString(mPatternLockView, event.getPattern()), seekBar.getProgress(), false);
                                 mPatternLockView.setRotation(0);
                             }
                             else{
