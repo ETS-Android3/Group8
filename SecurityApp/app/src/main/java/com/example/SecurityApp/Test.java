@@ -3,9 +3,11 @@ package com.example.SecurityApp;
 import java.util.ArrayList;
 
 public class Test {
+    private int id;
     private ArrayList<Attempt> attempts;
     private int uid;
-    public Test(int uid) {
+    public Test(int id, int uid) {
+        this.id = id;
         attempts = new ArrayList<Attempt>();
         this.uid = uid;
     }
@@ -15,6 +17,9 @@ public class Test {
     }
     public ArrayList<Attempt> getAttempts() {
         return attempts;
+    }
+    public int getId(){
+        return id;
     }
     /*Finds if the last attempt was a success;
     No tests completed -1

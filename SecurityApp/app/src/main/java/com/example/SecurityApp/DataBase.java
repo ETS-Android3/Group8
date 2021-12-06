@@ -27,7 +27,8 @@ public class DataBase implements Serializable {
 
 
     ArrayList<User> users;
-    ArrayList<ArrayList<Object>> userTests;
+    ArrayList<Test> tests;
+    ArrayList<Attempt> attempts;
 
     // Query Templates
     private final static String GET_USERS_QUERY = "SELECT name, id, scrabblePassword, patternPassword FROM USERS;";
@@ -38,13 +39,36 @@ public class DataBase implements Serializable {
 
     public DataBase() {
         users = getRemoteUsers();
-        userTests = new ArrayList<>();
+        tests = new ArrayList<>();
+        attempts = new ArrayList<>();
     }
-    public void addUserTest(int uid, Test t){
-        ArrayList<Object> list = new ArrayList<>();
-        list.add(uid);
-        list.add(t);
-        userTests.add(list);
+    public int addTest(int uid){
+        Test t = new Test(tests.size(),uid);
+        tests.add(t);
+        return t.getId();
+    }
+    public int newAttempt(int uid, double attemptTime, String lockType, boolean unlockSuccess, String unlockPattern){
+        //If the last test is not complete, add new attempt to it, otherwise start new test
+        System.out.println("ADDING NEW ATTEMPT");
+        Attempt a = new Attempt(attempts.size(), attemptTime, lockType, unlockSuccess, unlockPattern);
+        attempts.add(a);
+        Test t;
+        if(tests.size() == 0){
+            t = new Test(tests.size(),uid);
+            t.addAttempt(a);
+            System.out.print("ADDING NEW ATTEMPT ID: ");
+            System.out.println(a.getId());
+            return t.getId();
+        }
+        t = tests.get((tests.size()-1));
+        if(t.testComplete() == 1){
+            t.addAttempt(a);
+        }
+        else{
+            t = new Test(tests.size(),uid);
+            t.addAttempt(a);
+        }
+        return t.getId();
     }
     //PASSWORD GETTERS AND SETTERS
     public void setScrabblePasswordById(int id,String password){

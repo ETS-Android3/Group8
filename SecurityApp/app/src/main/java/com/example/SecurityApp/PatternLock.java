@@ -32,14 +32,12 @@ public class PatternLock extends AppCompatActivity {
     private int uid;
     private long startTime, endTime;
     private double elapsedTime;
-    Test test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_pattern_lock);
 
         Intent intent = getIntent();
-        test = new Test(uid);
         db = (DataBase) intent.getSerializableExtra("Database");
         uid = intent.getIntExtra("UID", 0);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -111,7 +109,7 @@ public class PatternLock extends AppCompatActivity {
                                 endTime = System.currentTimeMillis();
                                 elapsedTime = ((double) (endTime - startTime)) / 1000;
                                 boolean result = patternCheck(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
-                                endAttempt(PatternLockUtils.patternToString(mPatternLockView, event.getPattern()), result);
+                                db.newAttempt(uid,elapsedTime,"Pattern",result,PatternLockUtils.patternToString(mPatternLockView, event.getPattern()));
                                 mPatternLockView.setRotation(0);
                             }
                             else{
@@ -124,18 +122,7 @@ public class PatternLock extends AppCompatActivity {
                     }
                 });
     }
-    private void startAttempt(){
 
-    }
-    private void endAttempt(String endPattern, boolean result){
-        Attempt attempt = new Attempt(elapsedTime,"Pattern",result,endPattern);
-        test.addAttempt(attempt);
-        //If test is complete, submit test and start a new one
-        if(result){
-            db.addUserTest(uid,test);
-            test = new Test(uid);
-        }
-    }
     //Method for handling rotation
     private void rotate(int amount){
         mPatternLockView.setRotation(mPatternLockView.getRotation()+amount);
