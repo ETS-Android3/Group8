@@ -139,6 +139,7 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                     AlertDialog alert = builder.create();
                     alert.show();
                     isFirstClick=true;
+                    testPassword.delete(0, testPassword.length());
 
 
                 } else {
