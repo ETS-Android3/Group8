@@ -37,7 +37,7 @@ public class DataBase implements Serializable {
     private final static String DELETE_ATTEMPTS_QUERY = "DELETE FROM ATTEMPT;";
     private final static String INSERT_USER_QUERY = "INSERT INTO USERS VALUES (?, ?, ?, ?);";
     private final static String INSERT_TEST_QUERY = "INSERT INTO TEST VALUES (?, ?);";
-    private final static String INSERT_ATTEMPT_QUERY = "INSERT INTO ATTEMPT VALUES (?, ?, ?, ?, ?);";
+    private final static String INSERT_ATTEMPT_QUERY = "INSERT INTO ATTEMPT VALUES (?, ?, ?, ?, ?, ?);";
 
 
 
@@ -59,6 +59,7 @@ public class DataBase implements Serializable {
         Test t;
         if(tests.size() == 0){
             t = new Test(tests.size(),uid);
+            tests.add(t);
             t.addAttempt(a);
             System.out.print("ADDING NEW ATTEMPT ID: ");
             System.out.println(a.getId());
@@ -71,6 +72,7 @@ public class DataBase implements Serializable {
         }
         else{
             t = new Test(tests.size(),uid);
+            tests.add(t);
             t.addAttempt(a);
         }
         setRemoteTestsAndAttempts();
@@ -179,7 +181,7 @@ public class DataBase implements Serializable {
             Connection connection = DriverManager.getConnection(URL);
             Statement statement = connection.createStatement();
 
-            // Delete all users for fresh start
+            // Delete all tests and attempts for a fresh start
             statement.executeUpdate(DELETE_TESTS_QUERY);
             statement.executeUpdate(DELETE_ATTEMPTS_QUERY);
 
@@ -192,7 +194,8 @@ public class DataBase implements Serializable {
                     preparedStatement.setDouble(2, attempt.getAttemptTime());
                     preparedStatement.setString(3, attempt.getLockType());
                     preparedStatement.setString(4, attempt.getUnlockPattern());
-                    preparedStatement.setInt(5, test.getId());
+                    preparedStatement.setBoolean(5, attempt.isUnlockSuccess());
+                    preparedStatement.setInt(6, test.getId());
                     preparedStatement.executeUpdate();
                 }
                 PreparedStatement preparedStatement = connection.prepareStatement(INSERT_TEST_QUERY);

@@ -118,10 +118,14 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                 isFirstClick=true;
             } else {
                 // Check password mode
+                //Set the result
+                Boolean result = false;
                 // Test the data or set it as the password
                 if (testPassword(testPassword.toString(), db.getScrabblePasswordById(uid))) {
                     // Passwords matched
                     System.out.println("Passwords matched.");
+                    //Set result to show passwords matched
+                    result = true;
 
                     // Display a popup
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -130,7 +134,7 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                     AlertDialog alert = builder.create();
                     alert.show();
                     isFirstClick=true;
-                    // TODO: Send attempt to the database
+
 
                 } else {
                     // Passwords did not match
@@ -152,11 +156,10 @@ public class ScrabbleLock extends AppCompatActivity implements View.OnClickListe
                     AlertDialog alert = builder.create();
                     alert.show();
 
-                    // TODO: Send data to the database
-
                     // Make the next click start the timer again
                     isFirstClick = true;
                 }
+                db.newAttempt(uid,elapsedTime,"Scrabble",result,testPassword.toString());
             }
         } else {
             // Was one of the other buttons clicked
