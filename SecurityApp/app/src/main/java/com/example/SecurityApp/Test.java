@@ -18,6 +18,9 @@ public class Test {
     public ArrayList<Attempt> getAttempts() {
         return attempts;
     }
+    public int getUid() {
+        return uid;
+    }
     public int getId(){
         return id;
     }

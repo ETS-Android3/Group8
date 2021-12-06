@@ -33,7 +33,11 @@ public class DataBase implements Serializable {
     // Query Templates
     private final static String GET_USERS_QUERY = "SELECT name, id, scrabblePassword, patternPassword FROM USERS;";
     private final static String DELETE_USERS_QUERY = "DELETE FROM USERS;";
+    private final static String DELETE_TESTS_QUERY = "DELETE FROM TEST;";
+    private final static String DELETE_ATTEMPTS_QUERY = "DELETE FROM ATTEMPT;";
     private final static String INSERT_USER_QUERY = "INSERT INTO USERS VALUES (?, ?, ?, ?);";
+    private final static String INSERT_TEST_QUERY = "INSERT INTO TEST VALUES (?, ?);";
+    private final static String INSERT_ATTEMPT_QUERY = "INSERT INTO ATTEMPT VALUES (?, ?, ?, ?, ?);";
 
 
 
@@ -58,6 +62,7 @@ public class DataBase implements Serializable {
             t.addAttempt(a);
             System.out.print("ADDING NEW ATTEMPT ID: ");
             System.out.println(a.getId());
+            setRemoteTestsAndAttempts();
             return t.getId();
         }
         t = tests.get((tests.size()-1));
@@ -68,6 +73,7 @@ public class DataBase implements Serializable {
             t = new Test(tests.size(),uid);
             t.addAttempt(a);
         }
+        setRemoteTestsAndAttempts();
         return t.getId();
     }
     //PASSWORD GETTERS AND SETTERS
@@ -166,6 +172,44 @@ public class DataBase implements Serializable {
             ex.printStackTrace();
         }
     }
+
+    private void setRemoteTestsAndAttempts(){
+        try {
+            // Establish the connection.
+            Connection connection = DriverManager.getConnection(URL);
+            Statement statement = connection.createStatement();
+
+            // Delete all users for fresh start
+            statement.executeUpdate(DELETE_TESTS_QUERY);
+            statement.executeUpdate(DELETE_ATTEMPTS_QUERY);
+
+            //Insert each test
+            for (Test test:tests) {
+                //For each test, insert each Attempt
+                for(Attempt attempt:test.getAttempts()){
+                    PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ATTEMPT_QUERY);
+                    preparedStatement.setInt(1, attempt.getId());
+                    preparedStatement.setDouble(2, attempt.getAttemptTime());
+                    preparedStatement.setString(3, attempt.getLockType());
+                    preparedStatement.setString(4, attempt.getUnlockPattern());
+                    preparedStatement.setInt(5, test.getId());
+                    preparedStatement.executeUpdate();
+                }
+                PreparedStatement preparedStatement = connection.prepareStatement(INSERT_TEST_QUERY);
+                preparedStatement.setInt(1, test.getId());
+                preparedStatement.setInt(2, test.getUid());
+
+                preparedStatement.executeUpdate();
+            }
+            System.out.println("Inserted Tests and Attempts.");
+            connection.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
     public User findUserByName(String name){
         System.out.println(String.format("Testing for %s",name));
         for(User u: users){
